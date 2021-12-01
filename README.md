@@ -1,5 +1,5 @@
 # clickhouse-hdfs-loader
-submit Mapreduce job to hadoop,loading hdfs data to clickhouse，Support text or orc.
+submit Mapreduce job to hadoop, loading hdfs data to clickhouse，Support text, orc or avro.
 ## Options
 	--additional-cols VAL         : 导入时，数据每行追加内容；多个值以逗号划分 (default: )
 	--batch-size N                : batch size load data into clickhouse (default:196608)
