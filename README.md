@@ -17,7 +17,7 @@ submit Mapreduce job to hadoop,loading hdfs data to clickhouse，Support text or
 	--dt VAL                      : 导入数据的业务时间,format:YYYY-MM-DD
 	--escape-null VAL             : 当设置为false，将会保留\N作为字段值提交给clickhouse (default:true)
 	--exclude-fields VAL          : 数据源每行数据，被排除的字段下标，从0开始
-	--export-dir VAL              : 数据源HDFS路径
+	--export-dir VAL              : 数据源HDFS File Location路径
 	--extract-hive-partitions VAL : 是否根据数据源路径抽取hive分区，如xxx/dt=2017-01-01/pt=ios，将会抽
 					取出两个分区字段，并按顺序追加到每行数据后面。 (default: false)
 	--fields-terminated-by VAL    : 数据源文件字段分隔符 (default: |)
@@ -68,4 +68,46 @@ hadoop jar clickhouse-hdfs-loader.jar com.kugou.loader.clickhouse.ClickhouseHdfs
 --export-dir hdfs_path  \
 --extract-hive-partitions true \
 --exclude-fields 0,4,5,8 
+```
+
+## Updates
+
+Added support for parsing avro files
+```bash
+-i VAL                        : [text|orc|avro]
+```
+
+Added support for JSONEachRow as clickhouse insert format
+```bash
+--clickhouse-format VAL       : 导入到Clickhouse的数据格式，一般保留默认配置。支持[TabSeparated|Tab
+					SeparatedWithNames|TabSeparatedWithNamesAndTypes|TabSeparatedRaw|
+					CSV|CSVWithNames|JSONEachRow] (default:TabSeparated)
+```
+
+## Sample working examples
+
+load json file to clickhouse
+```bash
+hadoop jar clickhouse-hdfs-loader.jar com.kugou.loader.clickhouse.ClickhouseHdfsLoader \
+-Dmapreduce.job.queuename=root.default \
+-i text \
+--connect jdbc:clickhouse://xxx:8123/database \
+--username xx --password xx \
+--table distributed_table \
+--dt 2021-11-19 \
+--export-dir sample/test.json  \
+--clickhouse-format JSONEachRow 
+```
+
+load avro file to clickhouse
+```bash
+hadoop jar clickhouse-hdfs-loader.jar com.kugou.loader.clickhouse.ClickhouseHdfsLoader \
+-Dmapreduce.job.queuename=root.default \
+-i avro \
+--connect jdbc:clickhouse://xxx:8123/database \
+--username xx --password xx \
+--table distributed_table \
+--dt 2021-11-19 \
+--export-dir sample/test.avro  \
+--clickhouse-format JSONEachRow 
 ```
